@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { Category, Product, Attribute } from '../models'
+import { Category, Product, Attribute, Comment } from '../models'
 import { CreateError } from '../services/errorService'
 import { IRequest } from '../types'
 import { genereateAttrs, generateCats, generateImages } from '../services/productService'
@@ -49,12 +49,16 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
           model: Attribute,
           as: 'attributes',
           through: { attributes: [] }
+        },
+        {
+          model: Comment,
+          as: 'comments'
         }
       ]
     })
     if (!product) return next(CreateError.badRequest('Product not found'))
 
-    res.status(200).json({ product })
+    res.status(200).json(product)
   } catch(e) {
     next(CreateError.interanl('Getting Product Failed'))
   }
@@ -105,10 +109,14 @@ export const updateProduct = async (req: IRequest, res: Response, next: NextFunc
     const { name, slug, price, categories, attributes, desc, shortDesc } = req.body as CreateProductBody
     const { id } = req.params
     let files = req.files?.img
-    const images = generateImages(files)
+    let images = generateImages(files)
 
     const product = await Product.findOne({ where: { id } })
     if (!product) return next(CreateError.badRequest('Product not found'))
+
+    if (images.length === 0) {
+      images = product.images
+    }
 
     generateCats(categories, product.id)
     genereateAttrs(attributes, product.id)

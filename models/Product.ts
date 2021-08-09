@@ -5,6 +5,7 @@ import { IProduct, IProductCategory } from './types'
 
 import { Category } from './Category'
 import { Attribute } from './Attribute'
+import { Comment } from './Comment'
 
 export const Product = sequelize.define<IProduct>('product', {
   id: { type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true },
@@ -46,5 +47,7 @@ Product.belongsToMany(Category, {
 Product.belongsToMany(Attribute, {
   through: ProductAttribute,
 })
+
+Product.hasMany(Comment)
 
 export default Product

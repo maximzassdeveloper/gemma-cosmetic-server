@@ -65,3 +65,10 @@ export interface IAttributeValue extends Model {
   name: string
   slug: string
 }
+
+export interface IComment extends Model {
+  id: number
+  name: string
+  message: string
+  rating: number
+}

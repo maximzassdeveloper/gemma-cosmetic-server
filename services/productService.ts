@@ -1,4 +1,4 @@
-import { Attribute, AttributeValue, ProductAttribute, Category, ProductCategory } from '../models'
+import { Attribute, AttributeValue, ProductAttribute, Category, ProductCategory, Comment } from '../models'
 import slugify from 'slugify'
 import fileUpload from 'express-fileupload'
 import path from 'path'

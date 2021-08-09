@@ -1,7 +1,10 @@
 import { DataTypes } from 'sequelize'
-import { Cart, Order } from '.'
 import sequelize from '../db'
 import { IUser } from './types'
+
+import { Cart } from './Cart'
+import { Order } from './Order'
+import { Comment } from './Comment'
 
 export const User = sequelize.define<IUser>('user', {
   id: { type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true },
@@ -21,3 +24,4 @@ User.addScope('defaultScope', {
 
 User.hasOne(Cart)
 User.hasMany(Order)
+User.hasMany(Comment)
