@@ -1,11 +1,14 @@
-version: '3.8'
+version: '3.0'
 
 services: 
   server:
+    container_name: server
     build: 
       context: .
     depends_on: 
       - postgres
+    ports: 
+      - 5000:5000
   
   postgres:
     container_name: postgres
@@ -18,12 +21,6 @@ services:
       - 5432:5432
     volumes:
       - pgdata:/var/lib/postgresql/data
-  
-  nginx:
-    build: 
-      context: ./nginx
-    ports: 
-      - 5000:5000
 
 volumes: 
   pgdata:

@@ -55,8 +55,12 @@ export const updateProduct = async (req: IRequest, res: Response, next: NextFunc
   try {
     const { count } = req.body
     const { slug } = req.params
+    const user = req.user
 
-    const cartProduct = await CartProduct.findOne({ where: { slug } })
+    const cart = await Cart.findOne({ where: { userId: user?.id } })
+    if (!cart) return next(CreateError.badRequest('Cart Not Found'))
+
+    const cartProduct = await CartProduct.findOne({ where: { slug, cartId: cart.id } })
     if (!cartProduct) return next(CreateError.notFound('Cart Product Not Found'))
 
     const updated = await cartProduct.update({ count, totalPrice: cartProduct.price * count })

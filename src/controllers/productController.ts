@@ -9,11 +9,8 @@ dotenv.config()
 export const getProducts = async (req: Request, res: Response) => {
   const { attrs, cats } = req.query
 
-  console.log(attrs, '----------------')
-
   const includeArr = []
   if (attrs) {
-    console.log('ye-----------------------')
     includeArr.push({
       model: AttributeValue,
       where: { slug: attrs.toString().split(',') }

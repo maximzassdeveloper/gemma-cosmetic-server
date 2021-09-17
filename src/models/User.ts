@@ -18,8 +18,13 @@ export const User = sequelize.define<IUser>('user', {
   img: { type: DataTypes.STRING, allowNull: true }
 }, {
   hooks: {
-    beforeValidate: (user: IUser) => {
+    beforeUpdate: (user: IUser) => {
       user.fullName = `${user.name} ${user.surname || ''}`.trim()
+    },
+    beforeValidate: (user: IUser) => {
+      if (!user.fullName) {
+        user.fullName = `${user.name} ${user.surname || ''}`.trim()
+      }
     }
   }
 })

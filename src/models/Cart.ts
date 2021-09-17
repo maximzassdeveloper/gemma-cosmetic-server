@@ -9,7 +9,7 @@ export const Cart = sequelize.define<ICart>('cart', {
 export const CartProduct = sequelize.define<ICartProduct>('cart_product', {
   id: { type: DataTypes.INTEGER, primaryKey: true, unique: true, autoIncrement: true },
   name: { type: DataTypes.STRING, allowNull: false },
-  slug: { type: DataTypes.STRING, unique: true, allowNull: false },
+  slug: { type: DataTypes.STRING, allowNull: false },
   price: { type: DataTypes.INTEGER, allowNull: false },
   totalPrice: { type: DataTypes.INTEGER, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: false },

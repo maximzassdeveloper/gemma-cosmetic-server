@@ -17,8 +17,8 @@ export const Category = sequelize.define<ICategory>('category', {
   }
 })
 
-Category.addScope('defaultScope', {
-  attributes: {
-    exclude: ['createdAt', 'updatedAt']
-  }
-})
+// Category.addScope('defaultScope', {
+//   attributes: {
+//     exclude: ['createdAt', 'updatedAt']
+//   }
+// })

@@ -6,7 +6,7 @@ const router = Router()
 router.get('/', controllers.getCategories)
 router.post('/create', authRequired, controllers.createCategory)
 router.delete('/delete/:id', authRequired, controllers.deleteCategory)
-router.put('/update', authRequired, controllers.updateCategory)
+router.put('/update/:id', authRequired, controllers.updateCategory)
 
 
 export default router

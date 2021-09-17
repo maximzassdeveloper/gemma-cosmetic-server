@@ -6,6 +6,7 @@ import categoryRouter from './categoryRouter'
 import commentRouter from './commentRouter'
 import orderRouter from './orderRouter'
 import attributeRouter from './attributeRouter'
+import uploadRouter from './uploadRouter'
 
 export const createRoutes = (app: Application) => {
   app.use('/api/users', userRouter)
@@ -15,4 +16,5 @@ export const createRoutes = (app: Application) => {
   app.use('/api/categories', categoryRouter)
   app.use('/api/orders', orderRouter)
   app.use('/api/attributes', attributeRouter)
+  app.use('/api/upload', uploadRouter)
 }
