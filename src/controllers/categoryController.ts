@@ -8,7 +8,7 @@ export const getCategories = async (req: Request, res: Response, next: NextFunct
     const categories = await Category.findAll()
     res.status(200).json(categories)
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Getting Categories Failed'))
+    next(CreateError.internal(e.message || 'Getting Categories Failed'))
   }
 }
 
@@ -19,7 +19,7 @@ export const createCategory = async (req: IRequest, res: Response, next: NextFun
   
     res.status(201).json(newCategory)
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Creating Category Failed'))
+    next(CreateError.internal(e.message || 'Creating Category Failed'))
   }
 }
 
@@ -30,7 +30,7 @@ export const deleteCategory = async (req: IRequest, res: Response, next: NextFun
   
     res.status(200).json({ message: 'Category deleted' })
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Deleting Category Failed'))
+    next(CreateError.internal(e.message || 'Deleting Category Failed'))
   }
 }
 
@@ -45,6 +45,6 @@ export const updateCategory = async (req: IRequest, res: Response, next: NextFun
     const updated = await category.update({ name, slug })
     res.status(200).json(updated)
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Updating Product Failed'))
+    next(CreateError.internal(e.message || 'Updating Product Failed'))
   }
 }

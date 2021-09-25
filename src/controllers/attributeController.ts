@@ -9,7 +9,7 @@ export const getAttrs = async (req: Request, res: Response, next: NextFunction) 
     })
     res.status(200).json(attrs)
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }
 
@@ -32,7 +32,7 @@ export const createAttr = async (req: Request, res: Response, next: NextFunction
 
     res.status(200).json(attr)
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }
 
@@ -45,7 +45,7 @@ export const deleteAttr = async (req: Request, res: Response, next: NextFunction
 
     res.status(200).json({ message: 'Attribute Deleted' })
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }
 
@@ -57,6 +57,6 @@ export const deleteAttrValue = async (req: Request, res: Response, next: NextFun
 
     res.status(200).json({ message: 'Attribute Value Deleted' })
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }

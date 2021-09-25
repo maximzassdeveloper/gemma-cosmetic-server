@@ -14,7 +14,7 @@ export const getCart = async (req: IRequest, res: Response, next: NextFunction) 
     const products = await CartProduct.findAll({ where: { cartId: cart.id } })
     res.status(200).json(products)
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }
 
@@ -32,7 +32,7 @@ export const addProduct = async (req: IRequest, res: Response, next: NextFunctio
 
     return res.status(200).json(newProduct)
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }
 
@@ -47,7 +47,7 @@ export const deleteProduct = async (req: IRequest, res: Response, next: NextFunc
 
     return res.status(200).json({ message: 'Deleted Cart Product' })
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }
 
@@ -67,6 +67,6 @@ export const updateProduct = async (req: IRequest, res: Response, next: NextFunc
 
     res.status(200).json({ product: updated })
   } catch(e) {
-    next(CreateError.interanl(e.message))
+    next(CreateError.internal(e.message))
   }
 }

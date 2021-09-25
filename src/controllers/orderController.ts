@@ -16,7 +16,7 @@ export const getOrders = async (req: Request, res: Response, next: NextFunction)
 
     res.status(200).json(orders)
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Getting Orders Failed'))
+    next(CreateError.internal(e.message || 'Getting Orders Failed'))
   }
 }
 
@@ -35,7 +35,7 @@ export const createOrder = async (req: IRequest, res: Response, next: NextFuncti
     res.status(200).json(foundedOrder)
 
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Creating Order Failed'))
+    next(CreateError.internal(e.message || 'Creating Order Failed'))
   }
 }
 
@@ -45,7 +45,7 @@ export const deleteOrder = async (req: IRequest, res: Response, next: NextFuncti
     await Order.destroy({ where: { id } })
     res.status(200).json({ message: 'Order Deleted' })    
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Deleting Order Failed'))
+    next(CreateError.internal(e.message || 'Deleting Order Failed'))
   }
 }
 
@@ -69,6 +69,6 @@ export const updateOrder = async (req: IRequest, res: Response, next: NextFuncti
     res.status(200).json(foundedOrder)
 
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Deleting Order Failed'))
+    next(CreateError.internal(e.message || 'Deleting Order Failed'))
   }
 }

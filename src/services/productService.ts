@@ -2,6 +2,7 @@ import { Attribute, AttributeValue, ProductAttribute, Category, ProductCategory,
 import slugify from 'slugify'
 import fileUpload from 'express-fileupload'
 import path from 'path'
+import fs from 'fs'
 import { v4 } from 'uuid'
 
 export const generateName = (name: string): string => {
@@ -32,6 +33,7 @@ export const generateCats = async (categories: string[] = [], productId: number)
   if (categories.length === 0) return
 
   categories.forEach(async (catName: string) => {
+    if (catName === '') return
     const [cat] = await Category.findOrCreate({ 
       where: { name: catName },
       defaults: { slug: slugify(catName, { lower: true }) } 
@@ -64,4 +66,15 @@ export const generateImages = (files: fileUpload.FileArray | undefined): string[
     }
   })
   return images
+}
+
+export const deleteImages = (files: string[] = []) => {
+  files.forEach(file => {
+    try {
+      const fileName = file.split(`${process.env.SERVER_URL}/`)[1]
+      fs.unlink(path.resolve(__dirname, '..', 'static', fileName), e => console.log(e))
+    } catch(e) {
+      console.log(e)
+    }
+  })
 }

@@ -24,7 +24,7 @@ export class CreateError extends Error {
     return new CreateError(404, message)
   }
 
-  static interanl(message: string = 'Something Wrong') {
+  static internal(message: string = 'Something Wrong') {
     return new CreateError(500, message)
   }
 }

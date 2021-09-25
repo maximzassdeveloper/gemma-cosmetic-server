@@ -49,6 +49,17 @@ export interface IOrderProduct extends Model {
   image: string
 }
 
+export interface IPage extends Model {
+  name: string
+  slug: string
+  body: string
+  metaDesc?: string
+  metaTitle?: string
+  metaKeywords?: string
+  metaRobots?: string
+  tags?: string[]
+}
+
 // Products
 export interface IProduct extends Model {
   id: number
@@ -58,6 +69,7 @@ export interface IProduct extends Model {
   shortDesc?: string
   desc?: string
   images: string[]
+  tags?: string[]
 }
 
 export interface ICategory extends Model {
@@ -95,4 +107,6 @@ export interface IComment extends Model {
   name: string
   message: string
   rating: number
+  videos?: string[]
+  images?: string[]
 }

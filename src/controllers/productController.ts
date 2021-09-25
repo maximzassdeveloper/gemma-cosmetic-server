@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { Category, Product, AttributeValue, Comment, Attribute } from '../models'
 import { CreateError } from '../services/errorService'
 import { IRequest } from '../types'
-import { genereateAttrs, generateCats, generateImages } from '../services/productService'
+import { genereateAttrs, generateCats, generateImages, deleteImages } from '../services/productService'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -75,42 +75,48 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 
     res.status(200).json(product)
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Getting Product Failed'))
+    next(CreateError.internal(e.message || 'Getting Product Failed'))
   }
 }
 
 export const createProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, slug, price, categories, attributes, desc, shortDesc } = req.body
+    const { name, slug, price, categories, attributes, tags, metaTitle, metaDesc, metaKeywords, metaRobots, desc, shortDesc } = req.body
     let { files } = req
 
     const images = generateImages(files)
 
-    const newProduct = await Product.create({ name, slug, price, desc, shortDesc, images })
+    const newProduct = await Product.create({ name, slug, price, desc, shortDesc, images, metaTitle, metaDesc, metaKeywords, metaRobots, tags: JSON.parse(tags) })
 
     generateCats(categories.split(','), newProduct.id)
     genereateAttrs(attributes.split(','), newProduct.id)
 
     res.status(201).json({ newProduct })
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Creating Product Failed'))
+    next(CreateError.internal(e.message || 'Creating Product Failed'))
   }
 }
 
 export const deleteProduct = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
+
+    const product = await Product.findByPk(id)
+    if (!product) return next(CreateError.badRequest('Product Not Found'))
+
+    deleteImages(product.images)
+
     await Product.destroy({ where: { id } })
 
     res.status(200).json({ message: 'Product delete' })
   } catch(e) {
-    next(CreateError.interanl('Delete Product Failed'))
+    next(CreateError.internal('Delete Product Failed'))
   }
 }
 
 export const updateProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, slug, price, categories = '', attributes = '', desc, shortDesc } = req.body
+    const { name, slug, price, categories = '', attributes = '', metaTitle, metaDesc, metaKeywords, metaRobots, desc, shortDesc, tags } = req.body
     const { id } = req.params
     let { files } = req
 
@@ -126,10 +132,10 @@ export const updateProduct = async (req: IRequest, res: Response, next: NextFunc
     generateCats(categories.split(','), product.id)
     genereateAttrs(attributes.split(','), product.id)
 
-    const updatedProduct = await product.update({ name, slug, price, desc, shortDesc, images })
+    const updatedProduct = await product.update({ name, slug, price, desc, shortDesc, images, metaTitle, metaDesc, metaKeywords, metaRobots, tags: JSON.parse(tags) })
 
     res.status(200).json({ product: updatedProduct })
   } catch(e) {
-    next(CreateError.interanl(e.message || 'Updating Product Failed'))
+    next(CreateError.internal(e.message || 'Updating Product Failed'))
   }
 }

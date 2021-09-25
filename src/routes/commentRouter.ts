@@ -1,9 +1,11 @@
 import { Router } from 'express'
-import { authRequired } from '../middlewares/authMiddleware'
+import { adminRequired } from '../middlewares/authMiddleware'
 import * as controllers from '../controllers/commentController'
 const router = Router()
 
-router.post('/create', authRequired, controllers.createComment)
-router.put('/update/:id', authRequired, controllers.updateComment)
+router.get('/', controllers.getComments)
+router.post('/create', adminRequired, controllers.createComment)
+router.put('/update/:id', adminRequired, controllers.updateComment)
+router.delete('/delete/:id', adminRequired, controllers.deleteComment)
 
 export default router
