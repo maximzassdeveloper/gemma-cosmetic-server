@@ -1,4 +1,5 @@
 import { DataTypes } from 'sequelize'
+import { Product } from '.'
 import sequelize from '../db'
 import { IComment } from './types'
 
@@ -15,4 +16,7 @@ Comment.addScope('defaultScope', {
   // attributes: {
   //   exclude: ['createdAt', 'updatedAt']
   // }
+  // include: [{
+  //   model: Product
+  // }]
 })

@@ -20,10 +20,6 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     const user = await User.create({ name, surname, email, password: hashPassword })
     await Cart.create({ userId: user.id })
 
-    if (email === 'maxim-zasss@yandex.ru') {
-      await user.update({ role: 'ADMIN' })
-    }
-
     // Genereate data transfer
     const data = genereateData(res, user)
     res.status(201).json(data)
