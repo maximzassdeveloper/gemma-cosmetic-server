@@ -13,6 +13,8 @@ dotenv.config()
 
 const app = express()
 
+console.log('test')
+
 app.use(cors({
   credentials: true,
   origin: process.env.CLIENT_URL
