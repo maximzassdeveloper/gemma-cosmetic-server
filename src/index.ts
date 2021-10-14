@@ -13,7 +13,8 @@ dotenv.config()
 
 const app = express()
 
-console.log('test 2 most new')
+console.log('test1')
+console.log('test2')
 
 app.use(cors({
   credentials: true,
