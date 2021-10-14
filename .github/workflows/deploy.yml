@@ -18,4 +18,4 @@ jobs:
           script: |
             cd /home/gemma_cosmetic/gemma-cosmetic-server
             git pull
-            docker-compose up --build
+            docker-compose up --build -d
