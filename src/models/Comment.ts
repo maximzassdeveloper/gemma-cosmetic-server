@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize'
-import { Product } from '.'
+import { Product } from './Product'
 import sequelize from '../db'
 import { IComment } from './types'
 
@@ -12,11 +12,11 @@ export const Comment = sequelize.define<IComment>('comment', {
   images: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: true }
 })
 
+Product.hasMany(Comment)
+Comment.belongsTo(Product)
+
 Comment.addScope('defaultScope', {
-  // attributes: {
-  //   exclude: ['createdAt', 'updatedAt']
-  // }
-  // include: [{
-  //   model: Product
-  // }]
+  include: [{
+    model: Product
+  }]
 })

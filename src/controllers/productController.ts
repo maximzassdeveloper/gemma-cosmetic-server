@@ -59,7 +59,6 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
         },
         {
           model: AttributeValue,
-          // as: 'attributes',
           include: [{
             model: Attribute
           }],

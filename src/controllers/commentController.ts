@@ -1,10 +1,9 @@
 import { Response, NextFunction } from 'express'
-import { Comment } from '../models'
+import { Comment, Product } from '../models'
 import { CreateError } from '../services/errorService'
 import { IRequest } from '../types'
 import { deleteImages, generateName } from '../services/productService'
 import path from 'path'
-import fs from 'fs'
 
 export const getComments = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
@@ -48,7 +47,8 @@ export const createComment = async (req: IRequest, res: Response, next: NextFunc
       })
     }
 
-    const comment = await Comment.create({ name, message, rating, videos, images, userId: user.id, productId })
+    const newComment = await Comment.create({ name, message, rating, videos, images, userId: user.id, productId })
+    const comment = await Comment.findByPk(newComment.id)
     res.status(201).json(comment)
 
   } catch(e) {

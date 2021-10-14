@@ -8,6 +8,7 @@ import orderRouter from './orderRouter'
 import attributeRouter from './attributeRouter'
 import uploadRouter from './uploadRouter'
 import pageRouter from './pageRouter'
+import mailRouter from './mailRouter'
 
 export const createRoutes = (app: Application) => {
   app.use('/api/users', userRouter)
@@ -19,4 +20,5 @@ export const createRoutes = (app: Application) => {
   app.use('/api/orders', orderRouter)
   app.use('/api/attributes', attributeRouter)
   app.use('/api/upload', uploadRouter)
+  app.use('/api/mails', mailRouter)
 }

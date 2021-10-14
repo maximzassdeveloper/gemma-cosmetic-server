@@ -53,6 +53,7 @@ Product.belongsToMany(AttributeValue, {
   through: ProductAttribute,
 })
 
-Product.hasMany(Comment)
+// Product.hasMany(Comment)
+// Comment.belongsTo(Product)
 
 export default Product
