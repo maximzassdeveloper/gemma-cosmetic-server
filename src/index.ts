@@ -14,6 +14,7 @@ dotenv.config()
 const app = express()
 
 console.log('test1')
+console.log('test2')
 
 app.use(cors({
   credentials: true,
