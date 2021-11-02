@@ -13,12 +13,9 @@ dotenv.config()
 
 const app = express()
 
-console.log('test1')
-console.log('test2')
-
 app.use(cors({
   credentials: true,
-  origin: process.env.CLIENT_URL
+  origin: [process.env.CLIENT_URL || '', process.env.ADMIN_URL || '']
 }))
 app.use(express.json())
 app.use(express.static(path.resolve(__dirname, 'static')))

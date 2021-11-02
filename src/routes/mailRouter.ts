@@ -20,8 +20,8 @@ router.post('/mail-partner', (req: Request, res: Response, next: NextFunction) =
       from: process.env.MAIL_USER,
       to: process.env.MAIL_TO,
       subject: 'Заявка с gemmainrussia.ru',
-      text: `Имя: ${name}, Почта: ${email}`,
-      html: '<b>Новый партнер</b><br> Ответь ему<br/>',
+      // text: `Имя: ${name}, Почта: ${email}`,
+      html: `Имя: ${name} <br />Почта: ${email}`,
     }
 
     transporter.sendMail(mailData, (error, info) => {
