@@ -110,3 +110,9 @@ export interface IComment extends Model {
   videos?: string[]
   images?: string[]
 }
+
+export interface IFile extends Model {
+  id: number
+  url: string
+  type: string
+}

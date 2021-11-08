@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
-import { Category, Product, AttributeValue, Comment, Attribute } from '../models'
+import { Category, File, Product, AttributeValue, Comment, Attribute, ProductCategory, ProductAttribute } from '../models'
 import { CreateError } from '../services/errorService'
 import { IRequest } from '../types'
 import { genereateAttrs, generateCats, generateImages, deleteImages } from '../services/productService'
 import dotenv from 'dotenv'
+import { ProductCreateData } from '../types/product'
 dotenv.config()
 
 export const getProducts = async (req: Request, res: Response) => {
@@ -59,8 +60,9 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
         },
         {
           model: AttributeValue,
+          as: 'attrs',
           include: [{
-            model: Attribute
+            model: Attribute,
           }],
           through: { attributes: [] }
         },
@@ -80,17 +82,45 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 
 export const createProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, slug, price, categories, attributes, tags, metaTitle, metaDesc, metaKeywords, metaRobots, desc, shortDesc } = req.body
-    let { files } = req
+    const { name, slug, price, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
 
-    const images = generateImages(files)
+    console.log(req.body)
 
-    const newProduct = await Product.create({ name, slug, price, desc, shortDesc, images, metaTitle, metaDesc, metaKeywords, metaRobots, tags: JSON.parse(tags) })
+    const newProduct = await Product.create({ name, slug, price, desc, tags, metaTitle, metaDesc, metaKeywords, metaRobots })
+    if (!newProduct) return next(CreateError.badRequest('Product creation failed '))
 
-    generateCats(categories.split(','), newProduct.id)
-    genereateAttrs(attributes.split(','), newProduct.id)
+    // Create categories 
+    categories?.forEach(async catName => {
+      try {
+        const cat = await Category.findOne({ where: { name: catName } })
+        if (!cat) return
+  
+        await ProductCategory.create({ categoryId: cat.id, productId: newProduct.id })
+      } catch(e) {
+        console.log(e)
+      }
+    })
 
-    res.status(201).json({ newProduct })
+    // Create attributes
+    attrs?.forEach(async attrId => { 
+      try {
+        await ProductAttribute.create({ 
+          attributeValueId: attrId, 
+          productId: newProduct.id 
+        })
+      } catch(e) {
+        console.log(e)
+      }
+    })
+
+    // Update images
+    images.forEach(async url => {
+      const image = await File.findOne({ where: { url } })
+      if (!image) return
+      await image.update({ productId: newProduct.id })
+    })
+
+    res.status(201).json(newProduct)
   } catch(e) {
     next(CreateError.internal(e.message || 'Creating Product Failed'))
   }
@@ -103,11 +133,9 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
     const product = await Product.findByPk(id)
     if (!product) return next(CreateError.badRequest('Product Not Found'))
 
-    deleteImages(product.images)
-
     await Product.destroy({ where: { id } })
 
-    res.status(200).json({ message: 'Product delete' })
+    res.status(200).json({ message: 'Product deleted success' })
   } catch(e) {
     next(CreateError.internal('Delete Product Failed'))
   }
@@ -115,25 +143,61 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 
 export const updateProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, slug, price, categories = '', attributes = '', metaTitle, metaDesc, metaKeywords, metaRobots, desc, shortDesc, tags } = req.body
     const { id } = req.params
-    let { files } = req
+    const { name, slug, price, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
 
-    let images = generateImages(files)
+    const product = await Product.findByPk(id)
+    if (!product) return next(CreateError.badRequest('Product not founded '))
 
-    const product = await Product.findOne({ where: { id } })
-    if (!product) return next(CreateError.badRequest('Product not found'))
+    await product.update({ name, slug, price, desc, tags, metaTitle, metaDesc, metaKeywords, metaRobots })
 
-    if (images.length === 0) {
-      images = product.images
-    }
+    // Create categories   
+    categories?.forEach(async catName => {
+      try {
+        const cat = await Category.findOne({ where: { name: catName } })
+        if (!cat) return
+  
+        await ProductCategory.create({ categoryId: cat.id, productId: id })
+      } catch(e) {
+        console.log(e)
+      }
+    })
+    const oldCategories = await ProductCategory.findAll({ where: { productId: id } })
+    oldCategories.forEach(async i => {
+      const cat = await Category.findOne({ where: { id: i.categoryId } })
+      if (!cat) return
 
-    generateCats(categories.split(','), product.id)
-    genereateAttrs(attributes.split(','), product.id)
+      if (!categories.includes(cat.name)) {
+        await i.destroy()
+      }
+    })
+ 
+    // Create attributes
+    const oldAttrs = await ProductAttribute.findAll({ where: { productId: id } })
+    oldAttrs.forEach(async attr => {
+      if (!attrs.includes(attr.id)) {
+        await ProductAttribute.destroy({ where: { id: attr.id } })
+      }
+    })
+    attrs?.forEach(async attrId => { 
+      try {
+        await ProductAttribute.create({ 
+          attributeValueId: attrId, 
+          productId: product.id 
+        })
+      } catch(e) {
+        console.log(e)
+      }
+    })
 
-    const updatedProduct = await product.update({ name, slug, price, desc, shortDesc, images, metaTitle, metaDesc, metaKeywords, metaRobots, tags: JSON.parse(tags) })
+    // Update images
+    images.forEach(async url => {
+      const image = await File.findOne({ where: { url } })
+      if (!image) return
+      await image.update({ productId: product.id })
+    })
 
-    res.status(200).json({ product: updatedProduct })
+    res.status(200).json(product)
   } catch(e) {
     next(CreateError.internal(e.message || 'Updating Product Failed'))
   }

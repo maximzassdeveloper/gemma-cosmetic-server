@@ -1,10 +1,8 @@
 import { Router } from 'express'
-import { generateImages } from '../services/productService'
+import * as controllers from '../controllers/uploadController'
 const router = Router()
 
-router.post('/', (req, res) => {
-  const images = generateImages(req.files)
-  res.status(200).json({ success: 1, file: { url: images[0] }})
-})
+router.post('/add', controllers.add)
+router.post('/remove', controllers.remove)
 
 export default router
