@@ -9,7 +9,7 @@ export const authRequired = (req: IRequest, res: Response, next: NextFunction) =
     if (!authHeader) return next(CreateError.unauthorized())
 
     const accessToken = authHeader.split(' ')[1]
-    const userPayload = verifyAccessToken(accessToken)
+    const userPayload = verifyAccessToken(accessToken) 
     if (!userPayload) return next(CreateError.unauthorized())
 
     req.user = userPayload
