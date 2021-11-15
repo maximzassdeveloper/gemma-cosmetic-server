@@ -13,7 +13,7 @@ export const Product = sequelize.define<IProduct>('product', {
   slug: { type: DataTypes.STRING, unique: true, allowNull: false },
   price: { type: DataTypes.INTEGER, allowNull: false },
   shortDesc: { type: DataTypes.STRING(400), allowNull: true },
-  desc: { type: DataTypes.STRING(2500), allowNull: true },
+  desc: { type: DataTypes.STRING(5000), allowNull: true },
   // images: { type: DataTypes.ARRAY(DataTypes.STRING), allowNull: false },
   metaDesc: { type: DataTypes.STRING(500), allowNull: true },
   metaTitle: { type: DataTypes.STRING(300), allowNull: true },
