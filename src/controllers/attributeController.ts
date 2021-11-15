@@ -7,7 +7,7 @@ export const getAttrs = async (req: Request, res: Response, next: NextFunction) 
     const attrs = await Attribute.findAll({
       include: { model: AttributeValue }
     })
-    res.status(200).json(attrs)
+    res.status(200).json(attrs) 
   } catch(e) {
     next(CreateError.internal(e.message))
   }
