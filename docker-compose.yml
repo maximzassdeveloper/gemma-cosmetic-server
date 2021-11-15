@@ -11,6 +11,8 @@ services:
       - postgres
     ports: 
       - 5000:5000
+    volumes: 
+      - server-static:/src/staric
   
   postgres:
     container_name: postgres
@@ -26,3 +28,4 @@ services:
 
 volumes: 
   pgdata:
+  server-static:
