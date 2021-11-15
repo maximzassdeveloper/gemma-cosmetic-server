@@ -12,7 +12,7 @@ services:
     ports: 
       - 5000:5000
     volumes: 
-      - server-static:/app/src/static
+      - server-static:/app/static
   
   postgres:
     container_name: postgres
