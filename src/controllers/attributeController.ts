@@ -9,7 +9,7 @@ export const getAttrs = async (req: Request, res: Response, next: NextFunction) 
     })
     res.status(200).json(attrs) 
   } catch(e) {
-    next(CreateError.internal(e.message))
+    next(CreateError.internal(e.message)) 
   }
 }
 
