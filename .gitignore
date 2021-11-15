@@ -1,7 +1,4 @@
 node_modules
 .env*
-src/static/*.jpg
-src/static/*.jpeg
-src/static/*.png
-src/static/*.svg
+src/static
 dist
