@@ -12,9 +12,7 @@ services:
     ports: 
       - 5000:5000
     volumes:
-      - type: volume
-        source: static
-        target: /src/static
+      - static:/app/src/static
     restart: always
   
   postgres:

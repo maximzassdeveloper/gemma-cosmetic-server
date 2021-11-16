@@ -15,10 +15,10 @@ const app = express()
 
 app.use(cors({
   credentials: true,
-  origin: [process.env.CLIENT_URL || '', process.env.ADMIN_URL || ''] 
+  origin: [process.env.CLIENT_URL || '', process.env.ADMIN_URL || '', 'http://localhost:4000']
 }))
 app.use(express.json())
-app.use(express.static(path.resolve(__dirname, 'static')))
+app.use(express.static(path.resolve(__dirname, 'static'))) 
 app.use(fileUpload({}))
 app.use(cookieParser())
 createRoutes(app)
