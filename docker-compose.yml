@@ -11,10 +11,6 @@ services:
       - postgres
     ports: 
       - 5000:5000
-    volumes: 
-      - type: volume
-        source: static
-        target: /src/static
     volumes:
       - type: volume
         source: static
