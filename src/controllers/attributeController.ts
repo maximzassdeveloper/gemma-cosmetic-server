@@ -11,7 +11,7 @@ export const getAttrs = async (req: Request, res: Response, next: NextFunction) 
   } catch(e) {
     next(CreateError.internal(e.message))
   }
-}
+} 
 
 interface CreateAttr {
   name: string
