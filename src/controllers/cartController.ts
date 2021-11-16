@@ -6,7 +6,7 @@ import { Cart, CartProduct } from '../models'
 export const getCart = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
     const user = req.user
-    if (!user) return next(CreateError.unauthorized())
+    if (!user) return next(CreateError.unauthorized()) 
 
     const cart = await Cart.findOne({ where: { userId: user.id } })
     if (!cart) return next(CreateError.notFound('Cart not found'))
