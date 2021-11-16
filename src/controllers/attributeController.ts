@@ -16,7 +16,7 @@ export const getAttrs = async (req: Request, res: Response, next: NextFunction) 
 interface CreateAttr {
   name: string
   slug: string
-  values?: [{ name: string, slug?: string }]
+  values?: [{ name: string, slug?: string }] 
 }
 
 export const createAttr = async (req: Request, res: Response, next: NextFunction) => {
