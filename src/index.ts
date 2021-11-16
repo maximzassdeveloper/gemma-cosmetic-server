@@ -21,7 +21,7 @@ app.use(express.json())
 app.use(express.static(path.resolve(__dirname, 'static')))
 app.use(fileUpload({}))
 app.use(cookieParser())
-createRoutes(app) 
+createRoutes(app)
 app.use(errorHandler)
 
 const start = async () => {
