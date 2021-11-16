@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 
 services: 
   server:
@@ -12,7 +12,9 @@ services:
     ports: 
       - 5000:5000
     volumes:
-      - gemma-cosmetic-server_static:/src/static
+      - type: volume
+        source: static
+        target: /src/static
     restart: always
   
   postgres:
@@ -30,4 +32,4 @@ services:
 
 volumes: 
   pgdata:
-  gemma-cosmetic-server_static:
+  static:
