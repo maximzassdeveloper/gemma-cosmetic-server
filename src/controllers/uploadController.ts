@@ -38,7 +38,9 @@ export const remove = async (req: Request, res: Response, next: NextFunction) =>
     if (!file) return next(CreateError.badRequest('File not found'))
 
     await file.destroy()
-    fs.unlink(path.resolve(__dirname, '..', 'static', url), e => console.log(e))
+    try {
+      fs.unlink(path.resolve(__dirname, '..', 'static', url), e => console.log(e))
+    } catch {}
 
     res.status(200).json('File deleted success')
   } catch(e) {

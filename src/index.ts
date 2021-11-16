@@ -15,7 +15,7 @@ const app = express()
 
 app.use(cors({
   credentials: true,
-  origin: [process.env.CLIENT_URL || '', process.env.ADMIN_URL || '', 'http://localhost:4000']
+  origin: [process.env.CLIENT_URL || '', process.env.ADMIN_URL || '']
 }))
 app.use(express.json())
 app.use(express.static(path.resolve(__dirname, 'static'))) 
