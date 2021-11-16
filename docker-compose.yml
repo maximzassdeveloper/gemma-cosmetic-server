@@ -12,7 +12,7 @@ services:
     ports: 
       - 5000:5000
     volumes:
-      - static:/app/src/static
+      - /home/gemma_cosmetic/static:/src/static
     restart: always
   
   postgres:
@@ -30,4 +30,4 @@ services:
 
 volumes: 
   pgdata:
-  static:
+  # static:
