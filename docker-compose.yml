@@ -15,6 +15,10 @@ services:
       - type: volume
         source: static
         target: /src/static
+    volumes:
+      - type: volume
+        source: static
+        target: /src/static
     restart: always
   
   postgres:
