@@ -17,5 +17,4 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           script: |
             cd /home/gemma_cosmetic/gemma-cosmetic-server
-            git pull
             docker-compose up --build -d
