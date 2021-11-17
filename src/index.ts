@@ -29,12 +29,6 @@ const start = async () => {
   try {
     await sequelize.authenticate()
     await sequelize.sync({ alter: true }) 
-
-    await Product.findAll().then(products => {
-      products.forEach(async (product, index) => {
-        await product.update({ index }) 
-      })
-    })
     
     const PORT = process.env.PORT || 5000
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
