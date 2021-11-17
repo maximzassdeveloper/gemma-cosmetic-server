@@ -66,6 +66,7 @@ export interface IProduct extends Model {
   name: string
   slug: string
   price: number
+  index: number
   shortDesc?: string
   desc?: string
   images: string[]

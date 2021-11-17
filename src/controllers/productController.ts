@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express'
 import { Category, File, Product, AttributeValue, Comment, Attribute, ProductCategory, ProductAttribute } from '../models'
 import { CreateError } from '../services/errorService'
 import { IRequest } from '../types'
-import { genereateAttrs, generateCats, generateImages, deleteImages } from '../services/productService'
 import dotenv from 'dotenv'
 import { ProductCreateData } from '../types/product'
 dotenv.config()
@@ -25,7 +24,10 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 
   const products = await Product.findAll({
-    include: includeArr
+    include: includeArr,
+    order: [
+      ['index', 'ASC']
+    ]
   })
 
   res.status(200).json(products)
@@ -84,9 +86,14 @@ export const createProduct = async (req: IRequest, res: Response, next: NextFunc
   try {
     const { name, slug, price, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
 
-    console.log(req.body)
+    const index = 0
+    await Product.findAll().then(products => {
+      products.forEach(async (product) => {
+        await product.update({ index: product.index+1 })
+      })
+    })
 
-    const newProduct = await Product.create({ name, slug, price, desc, tags, metaTitle, metaDesc, metaKeywords, metaRobots })
+    const newProduct = await Product.create({ name, slug, price, index, desc, tags, metaTitle, metaDesc, metaKeywords, metaRobots })
     if (!newProduct) return next(CreateError.badRequest('Product creation failed '))
 
     // Create categories 
@@ -144,12 +151,12 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 export const updateProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
-    const { name, slug, price, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
+    const { name, slug, price, index, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
 
     const product = await Product.findByPk(id)
     if (!product) return next(CreateError.badRequest('Product not founded '))
 
-    await product.update({ name, slug, price, desc, tags, metaTitle, metaDesc, metaKeywords, metaRobots })
+    await product.update({ name, slug, price, index, desc, tags, metaTitle, metaDesc, metaKeywords, metaRobots })
 
     // Create categories   
     categories?.forEach(async catName => {

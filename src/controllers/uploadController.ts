@@ -19,7 +19,7 @@ export const add = async (req: Request, res: Response, next: NextFunction) => {
     const newFile = await File.create({ url: fileName, type: fileType })
     if (!newFile) return next(CreateError.badRequest('File not created'))
 
-    file.mv(path.resolve(__dirname, '..', 'static', fileName))
+    file.mv(path.resolve(__dirname, '..', 'static', fileName)) 
 
     res.status(200).json({
       success: 1,

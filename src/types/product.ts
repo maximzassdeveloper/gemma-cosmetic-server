@@ -3,6 +3,7 @@ export interface ProductCreateData {
   slug?: string
   price: number
   images: string[]
+  index?: number
   categories?: string[]
   attrs?: number[]
   desc?: string

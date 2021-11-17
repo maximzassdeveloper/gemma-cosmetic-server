@@ -9,6 +9,7 @@ import { createRoutes } from './routes'
 import { errorHandler } from './middlewares/errorMiddleware'
 
 import dotenv from 'dotenv'
+import { Product } from './models'
 dotenv.config()
 
 const app = express()
@@ -27,8 +28,14 @@ app.use(errorHandler)
 const start = async () => {
   try {
     await sequelize.authenticate()
-    await sequelize.sync({ alter: true })
+    await sequelize.sync({ alter: true }) 
 
+    await Product.findAll().then(products => {
+      products.forEach(async (product, index) => {
+        await product.update({ index: index })
+      })
+    })
+    
     const PORT = process.env.PORT || 5000
     app.listen(PORT, () => console.log(`Server is running on port ${PORT}`))
   } catch(e) {
