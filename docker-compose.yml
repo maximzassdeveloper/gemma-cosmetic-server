@@ -10,7 +10,7 @@ services:
     depends_on: 
       - postgres
     volumes:
-      - static:/app/dist/static
+      - "/home/gemma_cosmetic:/app/dist/static"
     ports: 
       - 5000:5000
   
@@ -28,4 +28,3 @@ services:
 
 volumes: 
   pgdata:
-  static:
