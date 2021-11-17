@@ -32,7 +32,7 @@ const start = async () => {
 
     await Product.findAll().then(products => {
       products.forEach(async (product, index) => {
-        await product.update({ index })
+        await product.update({ index }) 
       })
     })
     
