@@ -84,7 +84,7 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 
 export const createProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, slug, price, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
+    const { name, slug, price, images = [], categories = [], attrs = [], tags = [], metaTitle = name, metaDesc, metaKeywords, metaRobots, desc = '' } = req.body as ProductCreateData
 
     const index = 0
     await Product.findAll().then(products => {
@@ -151,7 +151,7 @@ export const deleteProduct = async (req: Request, res: Response, next: NextFunct
 export const updateProduct = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
-    const { name, slug, price, index, images = [], categories = [], attrs = [], tags = [], metaTitle = '', metaDesc = '', metaKeywords = '', metaRobots = '', desc = '' } = req.body as ProductCreateData
+    const { name, slug, price, index, images, categories, attrs, tags, metaTitle, metaDesc, metaKeywords, metaRobots, desc } = req.body as ProductCreateData
 
     const product = await Product.findByPk(id)
     if (!product) return next(CreateError.badRequest('Product not founded '))
@@ -169,23 +169,27 @@ export const updateProduct = async (req: IRequest, res: Response, next: NextFunc
         console.log(e)
       }
     })
-    const oldCategories = await ProductCategory.findAll({ where: { productId: id } })
-    oldCategories.forEach(async i => {
-      const cat = await Category.findOne({ where: { id: i.categoryId } })
-      if (!cat) return
-
-      if (!categories.includes(cat.name)) {
-        await i.destroy()
-      }
-    })
+    if (categories) {
+      const oldCategories = await ProductCategory.findAll({ where: { productId: id } })
+      oldCategories.forEach(async i => {
+        const cat = await Category.findOne({ where: { id: i.categoryId } })
+        if (!cat) return
+  
+        if (!categories.includes(cat.name)) {
+          await i.destroy()
+        }
+      })
+    }
  
     // Create attributes
-    const oldAttrs = await ProductAttribute.findAll({ where: { productId: id } })
-    oldAttrs.forEach(async attr => {
-      if (!attrs.includes(attr.id)) {
-        await ProductAttribute.destroy({ where: { id: attr.id } })
-      }
-    })
+    if (attrs) {
+      const oldAttrs = await ProductAttribute.findAll({ where: { productId: id } })
+      oldAttrs.forEach(async attr => {
+        if (!attrs.includes(attr.id)) {
+          await ProductAttribute.destroy({ where: { id: attr.id } })
+        }
+      })
+    }
     attrs?.forEach(async attrId => { 
       try {
         await ProductAttribute.create({ 
@@ -198,7 +202,7 @@ export const updateProduct = async (req: IRequest, res: Response, next: NextFunc
     })
 
     // Update images
-    images.forEach(async url => {
+    images?.forEach(async url => {
       const image = await File.findOne({ where: { url } })
       if (!image) return
       await image.update({ productId: product.id })
