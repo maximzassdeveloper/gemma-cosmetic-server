@@ -108,8 +108,7 @@ export interface IComment extends Model {
   name: string
   message: string
   rating: number
-  videos?: string[]
-  images?: string[]
+  files?: IFile[]
 }
 
 export interface IFile extends Model {

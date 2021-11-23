@@ -1,9 +1,8 @@
 import { Response, NextFunction } from 'express'
-import { Comment, Product } from '../models'
+import { Comment, File } from '../models'
 import { CreateError } from '../services/errorService'
 import { IRequest } from '../types'
-import { deleteImages, generateName } from '../services/productService'
-import path from 'path'
+import { CommentResponse } from '../types/responses'
 
 export const getComments = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
@@ -21,36 +20,21 @@ export const getComments = async (req: IRequest, res: Response, next: NextFuncti
 
 export const createComment = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, message, rating, productId } = req.body
-    const { files } = req
+    const { name, message, rating, productId, files } = req.body as CommentResponse
 
     const user = req.user
     if (!user) return next(CreateError.unauthorized())
 
-    const videos: string[] = []
-    const images: string[] = []
-    if (files) {
-      Object.values(files).forEach(file => {
-        if (!Array.isArray(file)) {
-          const fileName = generateName(file.name)
-          file.mv(path.resolve(__dirname, '..', 'static', fileName))
-          switch (file.mimetype.split('/')[0]) {
-            case 'image':
-              images.push(process.env.SERVER_URL + '/' + fileName)
-              break
-            case 'video':
-              videos.push(process.env.SERVER_URL + '/' + fileName)
-              break
-            default: break
-          }
-        }
-      })
-    }
+    const newComment = await Comment.create({ name, message, rating, userId: user.id, productId })
 
-    const newComment = await Comment.create({ name, message, rating, videos, images, userId: user.id, productId })
+    files?.forEach(async url => {
+      const file = await File.findOne({ where: { url } })
+      if (file) await file.update({ commentId: newComment.id })
+    })
+
     const comment = await Comment.findByPk(newComment.id)
-    res.status(201).json(comment)
 
+    res.status(201).json(comment)
   } catch(e) {
     next(CreateError.internal(e.message))
   }
@@ -58,7 +42,7 @@ export const createComment = async (req: IRequest, res: Response, next: NextFunc
 
 export const updateComment = async (req: IRequest, res: Response, next: NextFunction) => {
   try {
-    const { name, message, rating } = req.body
+    const { name, message, rating, productId, files } = req.body as CommentResponse
     const { id } = req.params
 
     const user = req.user
@@ -67,9 +51,14 @@ export const updateComment = async (req: IRequest, res: Response, next: NextFunc
     const comment = await Comment.findOne({ where: { id } })
     if (!comment) return next(CreateError.notFound('Comment not found'))
 
-    const updated = await comment.update({ name, message, rating })
+    files?.forEach(async url => {
+      const file = await File.findOne({ where: { url } })
+      if (file) await file.update({ commentId: comment.id })
+    })
 
-    res.status(200).json({ comment: updated })
+    const updated = await comment.update({ name, message, rating, productId })
+
+    res.status(200).json(updated)
 
   } catch(e) {
     next(CreateError.internal(e.message))
@@ -82,9 +71,6 @@ export const deleteComment = async (req: IRequest, res: Response, next: NextFunc
 
     const comment = await Comment.findOne({ where: { id } })
     if (!comment) return next(CreateError.badRequest('Comment Not Found'))
-    
-    const files: string[] = [...comment.images || [], ...comment.videos || []]
-    deleteImages(files)
 
     await Comment.destroy({ where: { id } })
 
